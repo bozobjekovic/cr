@@ -15,8 +15,8 @@ The Company Registry is a system for company information management. This applic
 1. **Clone the repository**
 
    ```bash
-   git clone <repository-url>
-   cd company-registry
+   git clone https://github.com/bozobjekovic/cr.git
+   cd cr
    ```
 
 2. **Start all services**
@@ -35,9 +35,9 @@ The Company Registry is a system for company information management. This applic
 
 Each component can be run independently without Docker. Detailed setup instructions are available in each project's README:
 
-- **Identity Server**: See `Company.Registry.Identity/README.md`
-- **Web API**: See `Company.Registry/README.md`
-- **Frontend Client**: See `Company.Registry.Client/README.md`
+- **Identity Server**: [README](Company.Registry.Identity/README.md)
+- **Web API**: [README](Company.Registry/README.md)
+- **Frontend Client**: [README](Company.Registry.Client/README.md)
 
 This approach is useful for development, debugging, or when you prefer to manage services individually.
 
@@ -118,8 +118,9 @@ The main Web API represents the core backend project, implementing Clean Archite
 The Identity Server implementation doesn't follow production-ready practices, as the focus of this project was on demonstrating the company registry functionality rather than building a production-grade identity solution. For easier setup and demonstration purposes, the identity provider uses **in-memory configuration** with IdentityServer4.
 
 Key in-memory configurations (see `Company.Registry.Identity/Identity.API/Program.cs`):
+
 - API Scopes and Resources
-- Client configurations  
+- Client configurations
 - Identity Resources
 - Development signing credentials
 
