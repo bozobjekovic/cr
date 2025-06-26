@@ -1,0 +1,67 @@
+services:
+  web.api:
+    image: web.api
+    container_name: web.api
+    build:
+      context: ./Company.Registry
+      dockerfile: Web.API/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__Database=Host=database;Database=postgres;Username=postgres;Password=postgres
+      - Jwt__Authority=http://localhost:8081
+    depends_on:
+      database:
+        condition: service_healthy
+      identity.server:
+        condition: service_started
+    extra_hosts:
+      - "localhost:host-gateway"
+
+  database:
+    image: postgres:15
+    container_name: database
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - web_api_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  identity.server:
+    image: identity.server
+    container_name: identity.server
+    build:
+      context: ./Company.Registry.Identity
+      dockerfile: Identity.API/Dockerfile
+    ports:
+      - "8081:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__Database=Host=database;Database=postgres;Username=postgres;Password=postgres
+    depends_on:
+      database:
+        condition: service_healthy
+
+  client:
+    image: client
+    container_name: client
+    build:
+      context: ./Company.Registry.Client
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - web.api
+
+volumes:
+  web_api_data:
+    name: web_api_data
